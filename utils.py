@@ -2,12 +2,13 @@ import pandas as pd
 from datetime import datetime
 import os
 import logging
+from openpyxl import load_workbook
+from openpyxl.chart import LineChart, Reference
 
 logger = logging.getLogger(__name__)
 
 
 def save_to_excel(data, filename=None, sheet_name=None):
-
     try:
         if filename is None:
             from config import EXCEL_FILE, EXCEL_SHEET
@@ -28,6 +29,9 @@ def save_to_excel(data, filename=None, sheet_name=None):
             updated_df = new_df
 
         updated_df.to_excel(filename, sheet_name=sheet_name, index=False, engine='openpyxl')
+
+        create_excel_chart(filename, sheet_name)
+
         logger.info("Данные успешно сохранены в %s", filename)
         return True
 
@@ -46,6 +50,62 @@ def save_to_excel(data, filename=None, sheet_name=None):
             return False
 
 
+def create_excel_chart(filename, sheet_name):
+
+    try:
+        workbook = load_workbook(filename)
+        sheet = workbook[sheet_name]
+
+        df = pd.read_excel(filename, sheet_name=sheet_name)
+
+        if len(df) < 2:
+            logger.info("Недостаточно данных для построения графика")
+            return
+
+        numeric_data = []
+        for index, row in df.iterrows():
+            try:
+                price = float(str(row['price']).replace(',', '.'))
+
+                if 100 <= price <= 500:
+                    numeric_data.append({
+                        'timestamp': row['timestamp'],
+                        'price': price
+                    })
+            except (ValueError, TypeError):
+                continue
+
+        if len(numeric_data) < 2:
+            logger.info("Недостаточно числовых данных для построения графика")
+            return
+
+        filtered_df = pd.DataFrame(numeric_data)
+
+        for chart in sheet._charts:
+            sheet._charts.remove(chart)
+
+        chart = LineChart()
+        chart.title = "Динамика цены акций Сбербанка"
+        chart.style = 13
+        chart.x_axis.title = "Время"
+        chart.y_axis.title = "Цена (руб.)"
+        chart.height = 15
+        chart.width = 30
+
+        data_len = len(filtered_df) + 1
+        data = Reference(sheet, min_col=2, min_row=1, max_col=2, max_row=data_len)
+        categories = Reference(sheet, min_col=1, min_row=2, max_row=data_len)
+        chart.add_data(data, titles_from_data=True)
+        chart.set_categories(categories)
+        chart.legend = None
+        sheet.add_chart(chart, f"G2")
+        workbook.save(filename)
+        logger.info("График успешно добавлен в Excel файл")
+
+    except Exception as e:
+        logger.error("Ошибка при создании графика: %s", str(e))
+
+
 def read_excel_data(filename=None, sheet_name=None):
     try:
         if filename is None:
@@ -62,7 +122,6 @@ def read_excel_data(filename=None, sheet_name=None):
     except Exception as e:
         logger.error("Ошибка при чтении Excel: %s", str(e))
         return pd.DataFrame()
-
 
 def get_sber_price_fallback():
     try:

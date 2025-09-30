@@ -88,8 +88,17 @@ def main():
                         help='Однократный запуск')
     parser.add_argument('--interval', '-i', type=int,
                         help='Интервал мониторинга в секундах')
+    parser.add_argument('--gui', '-g', action='store_true',
+                        help='Запуск графического интерфейса')
 
     args = parser.parse_args()
+
+    if args.gui:
+        from flet_app import run_flet_app
+        print("Запуск графического интерфейса...")
+        run_flet_app()
+        return
+
     global MONITORING_INTERVAL
     if args.interval:
         MONITORING_INTERVAL = args.interval
