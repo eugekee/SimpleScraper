@@ -90,13 +90,16 @@ def main():
                         help='Интервал мониторинга в секундах')
     parser.add_argument('--gui', '-g', action='store_true',
                         help='Запуск графического интерфейса')
+    # Новый аргумент для бота
+    parser.add_argument('--bot', action='store_true',
+                        help='Запуск Telegram бота')
 
     args = parser.parse_args()
 
-    if args.gui:
-        from flet_app import run_flet_app
-        print("Запуск графического интерфейса...")
-        run_flet_app()
+    if args.bot:
+        from telegram_bot import run_telegram_bot
+        print("Запуск Telegram бота...")
+        run_telegram_bot()
         return
 
     global MONITORING_INTERVAL
