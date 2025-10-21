@@ -5,7 +5,7 @@ import re
 
 logger = logging.getLogger(__name__)
 
-
+#
 def get_sber_price_simple():
     try:
         headers = {
