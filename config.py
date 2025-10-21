@@ -1,5 +1,8 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "storage"
@@ -20,4 +23,8 @@ MONITORING_INTERVAL = 300
 MAX_MONITORING_DURATION = 24 * 60 * 60
 SAVE_INTERVAL = 5
 
-TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '8215328236:AAGH_iFNLselzOdXSo7aDkyWmpjHTCGAWQw')
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+
+if not TELEGRAM_BOT_TOKEN:
+    print("ПРЕДУПРЕЖДЕНИЕ: TELEGRAM_BOT_TOKEN не установлен")
+    print("Создайте файл .env с TELEGRAM_BOT_TOKEN=your_token")

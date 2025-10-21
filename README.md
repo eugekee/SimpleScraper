@@ -12,6 +12,9 @@
 - Python 3.8+
 - Chrome/Chromium браузер
 
+Создайте в корневой папке .env с данными вашего API
+TELEGRAM_BOT_TOKEN=ваш API
+
 pip install -r requirements.txt
 
 Доступные команды бота:
