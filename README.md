@@ -9,6 +9,8 @@
 
 Установка и настройка
 
+Сам телеграмм Бот - @SberStockScraperbot
+
 - Python 3.8+
 - Chrome/Chromium браузер
 
