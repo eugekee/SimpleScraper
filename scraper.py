@@ -10,7 +10,7 @@ import logging
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 import re
-
+#
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 

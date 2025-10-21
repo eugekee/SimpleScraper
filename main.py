@@ -5,7 +5,7 @@ import os
 from utils import monitor_sber_stock
 from config import MONITORING_INTERVAL
 import logging
-
+#
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
